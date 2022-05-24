@@ -1,6 +1,6 @@
 const express = require('express');
 const cors = require('cors');
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const jwt = require('jsonwebtoken');
 const app = express()
 require('dotenv').config()
@@ -23,12 +23,19 @@ const run=async()=>{
                 const result = await productCollection.find(quary).toArray()
                 res.send(result)
             })
+            app.get('/products/:id', async (req, res) => {
+                const id=req.params.id
+                const quary = {_id:ObjectId(id)}
+                const result = await productCollection.findOne(quary)
+                res.send(result)
+            })
+            
             app.get('/reviews',async (req, res) => {
                 const quary = {}
                 const result = await reviewsCollection.find(quary).toArray()
                 res.send(result)
             })
-            app()
+
 
         }
         finally{
