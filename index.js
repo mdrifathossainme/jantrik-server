@@ -28,6 +28,7 @@ const run=async()=>{
                 const result = await reviewsCollection.find(quary).toArray()
                 res.send(result)
             })
+            app()
 
         }
         finally{
