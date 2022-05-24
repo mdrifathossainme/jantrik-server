@@ -35,6 +35,20 @@ const run=async()=>{
                 const result = await reviewsCollection.find(quary).toArray()
                 res.send(result)
             })
+            app.get('/myorder', async (req, res) => {
+                const email = req.query.email;
+                console.log(email)
+                const queary = { email }
+                const result= await orderCollection.find(queary).toArray()
+                res.send(result)
+               
+            })
+
+
+
+
+
+
             app.post('/order', async (req, res) => {
                 const order = req.body;
                 console.log(order.productname)
