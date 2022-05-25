@@ -9,21 +9,20 @@ const port = process.env.PORT || 5000
 app.use(express.json())
 app.use(cors())
 
-const verifyJTW = (req, res, next) => {
-    const authHeader = req.headers.authonrization;
-    if (!authHeader) {
-        return res.status(401).send({message:"Unauthorizes Access"})
-    }
-   const token=authHeader.split(' ')[1];
-    jwt.verify(token,process.env.ACCESS_TOKEN,(err,decoded)=>{
-        if(err){
-            return res.status(403).sen({message:"Forbidden access"})
-        }
-        req.decoded=decoded;
-        next()
+const varyfyJTW=(req,res,next)=>{
+const authoHeader=req.headers.authorization;
+if(!authoHeader){
+    return res.status(401).send({massage:"you are UnAuthorized access"})
 
-    })
-    
+}
+const token= authoHeader.split(' ')[1]
+jwt.verify(token,process.env.ACCESS_TOKEN,function(err,decoded){
+    if(err){
+        return  res.status(401).send({message:"Forbidden access"})
+    }
+    req.decoded=decoded;
+    next()
+})
 }
 
 
@@ -91,7 +90,8 @@ const run=async()=>{
                     $set: user,
                 };
                 const result = await userCollection.updateOne(filter, updateDoc, options)
-                res.send({result})
+                const token=jwt.sign({email:email}, process.env.ACCESS_TOKEN,{expiresIn:"2h"})
+                res.send({result,token})
            })
 
 
