@@ -9,7 +9,7 @@ const port = process.env.PORT || 5000
 app.use(express.json())
 app.use(cors())
 
-const verifyJTW = (req, res, nest) => {
+const verifyJTW = (req, res, next) => {
     const authHeader = req.headers.authonrization;
     if (!authHeader) {
         return res.status(401).send({message:"Unauthorizes Access"})
@@ -40,24 +40,24 @@ const run=async()=>{
             const orderCollection = client.db('assigment12').collection('order')
             const userCollection = client.db('assigment12').collection('user')
 
-            app.get('/products',verifyJTW,async (req, res) => {
+            app.get('/products',async (req, res) => {
                 const quary = {}
                 const result = await productCollection.find(quary).toArray()
                 res.send(result)
             })
-            app.get('/products/:id',verifyJTW, async (req, res) => {
+            app.get('/products/:id', async (req, res) => {
                 const id=req.params.id
                 const quary = {_id:ObjectId(id)}
                 const result = await productCollection.findOne(quary)
                 res.send(result)
             })
             
-            app.get('/reviews',verifyJTW,async (req, res) => {
+            app.get('/reviews',async (req, res) => {
                 const quary = {}
                 const result = await reviewsCollection.find(quary).toArray()
                 res.send(result)
             })
-            app.get('/myorder',verifyJTW, async (req, res) => {
+            app.get('/myorder', async (req, res) => {
                 const email = req.query.email;
            
                 const queary = { email }
@@ -71,7 +71,7 @@ const run=async()=>{
 
 
 
-            app.post('/order',verifyJTW, async (req, res) => {
+            app.post('/order', async (req, res) => {
                 const order = req.body;
                 const quary = { productname:order.productname}
                 const exists = await orderCollection.findOne(quary)
@@ -91,8 +91,7 @@ const run=async()=>{
                     $set: user,
                 };
                 const result = await userCollection.updateOne(filter, updateDoc, options)
-                  const token=jwt.sign({email:email},process.env.ACCES_TOKEN,{expiresIn:"1h"})
-                res.send({result,token})
+                res.send({result})
            })
 
 
@@ -100,7 +99,7 @@ const run=async()=>{
 
 
 
-            app.delete('/orderdeleted/:id',verifyJTW, async (req, res) => {
+            app.delete('/orderdeleted/:id', async (req, res) => {
                 const id = req.params.id;
                 const quray = { _id: ObjectId(id) }
                 const result = await orderCollection.deleteOne(quray)
