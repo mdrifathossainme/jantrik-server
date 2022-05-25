@@ -28,8 +28,6 @@ const run=async()=>{
             })
             app.get('/products/:id', async (req, res) => {
                 const id = req.params.id
-              
-                
                 const quary = {_id:ObjectId(id)}
                 const result = await productCollection.findOne(quary)
                 res.send(result)
@@ -47,7 +45,8 @@ const run=async()=>{
             })
             app.get('/myorder', async (req, res) => {
                 const email = req.query.email;
-           
+                const authorization = req.headers.authorization
+                console.log(authorization)
                 const queary = { email }
                 const result= await orderCollection.find(queary).toArray()
                 res.send(result)
@@ -79,7 +78,8 @@ const run=async()=>{
                     $set: user,
                 };
                 const result = await userCollection.updateOne(filter, updateDoc, options)
-                res.send({result})
+                const token = jwt.sign({ email: email }, process.env.ACCESS_TOKEN, { expiresIn: "2h" })
+                res.send({result,token})
             })
 
 
