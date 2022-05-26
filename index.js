@@ -91,7 +91,7 @@ const run=async()=>{
                 res.send({admin:isAdmin})
             })
             
-            app.get('/user/:email', async(req,res)=>{
+            app.get('/user/:email',verifyJWT, async(req,res)=>{
                 const email= req.params.email
                 const user= await userCollection.findOne({email:email})
                 res.send(user)
@@ -184,7 +184,7 @@ const run=async()=>{
                 }
               
            })
-            app.put('/user/upprofile/:email', async (req, res) => {
+            app.put('/user/upprofile/:email',verifyJWT, async (req, res) => {
                 const email = req.params.email;
                 const deatols = req.body;
                 const filter = { email: email };
