@@ -90,6 +90,12 @@ const run=async()=>{
                 const isAdmin=user.role==="admin"
                 res.send({admin:isAdmin})
             })
+            
+            app.get('/user/:email', async(req,res)=>{
+                const email= req.params.email
+                const user= await userCollection.findOne({email:email})
+                res.send(user)
+            })
 
 
 
@@ -137,6 +143,7 @@ const run=async()=>{
                 const updatedBooking=await orderCollection.updateOne(filter,updateDoc);
                 res.send(updateDoc)
             })
+     
 
 
 
@@ -177,6 +184,19 @@ const run=async()=>{
                 }
               
            })
+            app.put('/user/upprofile/:email', async (req, res) => {
+                const email = req.params.email;
+                const deatols = req.body;
+                const filter = { email: email };
+               const options = { upsert: true };
+                const updateDoc = {
+                    $set:deatols,
+                };
+                const result = await userCollection.updateOne(filter, updateDoc,options)
+                res.send(result)
+                }
+              
+           )
 
 
 
