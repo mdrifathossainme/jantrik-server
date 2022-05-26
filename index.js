@@ -5,7 +5,7 @@ const jwt = require('jsonwebtoken');
 const app = express()
 require('dotenv').config()
 const port = process.env.PORT || 5000
-
+const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY)
 app.use(express.json())
 app.use(cors())
 
@@ -29,6 +29,7 @@ app.use(cors())
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.cwubk.mongodb.net/?retryWrites=true&w=majority`;
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
 
+console.log(uri)
 
 
 
@@ -75,11 +76,14 @@ const run=async()=>{
                }
                
             })
+            app.get('/myorder/:id',verifyJWT, async (req, res) => {
+                const id = req.params.id;
+                const filter = { _id: ObjectId(id) }
+                const result = await orderCollection.findOne(filter)
+                res.send(result)    
+            })
 
-
-
-
-
+          
 
             app.post('/order',verifyJWT, async (req, res) => {
                 const order = req.body;
@@ -91,6 +95,18 @@ const run=async()=>{
                 const result = await orderCollection.insertOne(order)
                 res.send(result)
             })
+           
+
+
+
+
+
+
+
+
+
+
+
 
             app.put('/user/:email', async (req, res) => {
                 const email = req.params.email;
@@ -108,14 +124,22 @@ const run=async()=>{
 
 
             app.put('/user/admin/:email',verifyJWT, async (req, res) => {
-                const email = req.params.email;;
-                console.log(email)
-                const filter = { email: email };
+                const email = req.params.email;
+                const request = req.decoded.email
+                const emailRole = await userCollection.findOne({ email: request });
+                console.log(emailRole)
+                if (emailRole.role === "admin") {
+                    const filter = { email: email };
                 const updateDoc = {
                     $set:{role:"admin"},
                 };
                 const result = await userCollection.updateOne(filter, updateDoc)
                 res.send(result)
+                }
+                else {
+                    res.status(403).send({message:"Forbident Access"})
+                }
+              
            })
 
 
