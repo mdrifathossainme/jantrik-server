@@ -41,12 +41,12 @@ const run=async()=>{
             const userCollection = client.db('assigment12').collection('user')
             const paymentCollection = client.db('assigment12').collection('payment')
 
-            app.get('/products',verifyJWT,async (req, res) => {
+            app.get('/products',async (req, res) => {
                 const quary = {}
                 const result = await productCollection.find(quary).toArray()
                 res.send(result)
             })
-            app.get('/products/:id',verifyJWT, async (req, res) => {
+            app.get('/products/:id', async (req, res) => {
                 const id = req.params.id
                 const quary = {_id:ObjectId(id)}
                 const result = await productCollection.findOne(quary)
@@ -58,7 +58,7 @@ const run=async()=>{
                 const result = await reviewsCollection.find(quary).toArray()
                 res.send(result)
             })
-            app.get('/alluser',verifyJWT,async (req, res) => {
+            app.get('/alluser',async (req, res) => {
                 const quary = {}
                 const result = await userCollection.find(quary).toArray()
                 res.send(result)
@@ -91,7 +91,7 @@ const run=async()=>{
                 res.send({admin:isAdmin})
             })
             
-            app.get('/user/:email',verifyJWT, async(req,res)=>{
+            app.get('/user/:email', async(req,res)=>{
                 const email= req.params.email
                 const user= await userCollection.findOne({email:email})
                 res.send(user)
@@ -104,11 +104,11 @@ const run=async()=>{
 
 
 
-            app.post('/order',verifyJWT, async (req, res) => {
+            app.post('/order', async (req, res) => {
                 const order = req.body;
                 const quary = { productname:order.productname,email: order.email }
                 const exists = await orderCollection.findOne(quary)
-                console.log(order,quary,exists)
+               
                 
                 if (exists) {
                     return res.send({success:false,product:exists})
@@ -128,9 +128,15 @@ const run=async()=>{
                 });
                 res.send({clientSecret: paymentIntent.client_secret})
         })
-            app.post('/review',verifyJWT, async(req,res)=>{
+            app.post('/review', async(req,res)=>{
             const review = req.body;
             const result = await reviewsCollection.insertOne(review)
+            res.send(result)
+                
+            })
+            app.post('/addproduct', async(req,res)=>{
+            const product = req.body;
+            const result = await productCollection.insertOne(product)
             res.send(result)
                 
             })
@@ -170,7 +176,6 @@ const run=async()=>{
                 const email = req.params.email;
                 const request = req.decoded.email
                 const emailRole = await userCollection.findOne({ email: request });
-                console.log(emailRole)
                 if (emailRole.role === "admin") {
                     const filter = { email: email };
                 const updateDoc = {
@@ -184,7 +189,7 @@ const run=async()=>{
                 }
               
            })
-          app.put('/user/upprofile/:email',verifyJWT, async (req, res) => {
+          app.put('/user/upprofile/:email', async (req, res) => {
                 const email = req.params.email;
                 const deatols = req.body;
                 const filter = { email: email };
@@ -197,14 +202,14 @@ const run=async()=>{
                 }
               
            )
-            app.delete('/orderdeleted/:id',verifyJWT, async (req, res) => {
+            app.delete('/orderdeleted/:id', async (req, res) => {
                 const id = req.params.id;
                 const quray = { _id: ObjectId(id) }
                 const result = await orderCollection.deleteOne(quray)
                res.send(result)
             })
 
-            app.delete('/product/:id',verifyJWT, async (req, res) => {
+            app.delete('/product/:id', async (req, res) => {
                 const id = req.params.id;
                 const quray = { _id: ObjectId(id) }
                 const result = await productCollection.deleteOne(quray)
