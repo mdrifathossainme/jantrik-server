@@ -76,7 +76,7 @@ const run=async()=>{
                }
                
             })
-            app.get('/myorder/:id', async (req, res) => {
+            app.get('/myorder/:id',verifyJWT, async (req, res) => {
                 const id = req.params.id;
                 const filter = { _id: ObjectId(id) }
                 const result = await orderCollection.findOne(filter)
@@ -87,8 +87,10 @@ const run=async()=>{
 
             app.post('/order',verifyJWT, async (req, res) => {
                 const order = req.body;
-                const quary = { email:order.email}
+                const quary = { productname:order.productname,email: order.email }
                 const exists = await orderCollection.findOne(quary)
+                console.log(order,quary,exists)
+                
                 if (exists) {
                     return res.send({success:false,product:exists})
                 }
@@ -96,7 +98,7 @@ const run=async()=>{
                 res.send(result)
             })
            
-        app.post('/create-payment-intent', async(req,res)=>{
+        app.post('/create-payment-intent',verifyJWT, async(req,res)=>{
                 const service=req.body;
                 const price=service.price;
                 const amount=price*100;
@@ -110,7 +112,7 @@ const run=async()=>{
 
 
 
-         app.patch('/order/:id',async(req,res)=>{
+         app.patch('/order/:id',verifyJWT,async(req,res)=>{
                 const id= req.params.id;
                 const payment= req.body;
                 const filter={_id:ObjectId(id)}
