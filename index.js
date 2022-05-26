@@ -87,7 +87,7 @@ const run=async()=>{
             app.get('/admin/:email', async(req,res)=>{
                 const email= req.params.email
                 const user= await userCollection.findOne({email:email})
-                const isAdmin=user.role==="admin"
+                const isAdmin=user?.role==="admin"
                 res.send({admin:isAdmin})
             })
             
@@ -185,7 +185,20 @@ const run=async()=>{
                 }
               
            })
-          
+          app.put('/user/upprofile/:email',verifyJWT, async (req, res) => {
+                const email = req.params.email;
+                const deatols = req.body;
+                const filter = { email: email };
+               const options = { upsert: true };
+                const updateDoc = {
+                    $set:deatols,
+                };
+                const result = await userCollection.updateOne(filter, updateDoc,options)
+                res.send(result)
+                }
+              
+           )
+
 
 
 
