@@ -125,8 +125,9 @@ const run=async()=>{
                     payment_method_types:['card']
                 });
                 res.send({clientSecret: paymentIntent.client_secret})
-            })
-
+        })
+            
+        
 
 
          app.patch('/complateorder/:id',async(req,res)=>{
@@ -184,20 +185,7 @@ const run=async()=>{
                 }
               
            })
-            app.put('/user/upprofile/:email',verifyJWT, async (req, res) => {
-                const email = req.params.email;
-                const deatols = req.body;
-                const filter = { email: email };
-               const options = { upsert: true };
-                const updateDoc = {
-                    $set:deatols,
-                };
-                const result = await userCollection.updateOne(filter, updateDoc,options)
-                res.send(result)
-                }
-              
-           )
-
+          
 
 
 
