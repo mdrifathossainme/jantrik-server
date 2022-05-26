@@ -126,7 +126,12 @@ const run=async()=>{
                 });
                 res.send({clientSecret: paymentIntent.client_secret})
         })
-            
+            app.post('/review',verifyJWT, async(req,res)=>{
+            const review = req.body;
+            const result = await reviewsCollection.insertOne(review)
+            res.send(result)
+                
+            })
         
 
 
