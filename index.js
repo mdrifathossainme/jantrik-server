@@ -87,7 +87,7 @@ const run=async()=>{
 
             app.post('/order',verifyJWT, async (req, res) => {
                 const order = req.body;
-                const quary = { productname:order.email}
+                const quary = { email:order.email}
                 const exists = await orderCollection.findOne(quary)
                 if (exists) {
                     return res.send({success:false,product:exists})
@@ -110,7 +110,7 @@ const run=async()=>{
 
 
 
-         app.patch('/booking/:id',async(req,res)=>{
+         app.patch('/order/:id',async(req,res)=>{
                 const id= req.params.id;
                 const payment= req.body;
                 const filter={_id:ObjectId(id)}
