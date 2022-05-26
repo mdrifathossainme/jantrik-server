@@ -151,7 +151,7 @@ const run=async()=>{
                     }
                 }
                 const result= await paymentCollection.insertOne(payment)
-                const updatedBooking=await orderCollection.updateOne(filter,updateDoc);
+                const updatedBooking=await orderCollection.updateOne(filter,updateDoc)
                 res.send(updateDoc)
             })
      
