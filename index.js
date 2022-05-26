@@ -104,9 +104,6 @@ const run=async()=>{
 
 
 
-
-          
-
             app.post('/order',verifyJWT, async (req, res) => {
                 const order = req.body;
                 const quary = { productname:order.productname,email: order.email }
@@ -137,8 +134,7 @@ const run=async()=>{
             res.send(result)
                 
             })
-        
-
+    
 
          app.patch('/complateorder/:id',async(req,res)=>{
                 const id= req.params.id;
@@ -155,13 +151,6 @@ const run=async()=>{
                 res.send(updateDoc)
             })
      
-
-
-
-
-
-
-
             app.put('/user/:email', async (req, res) => {
                 const email = req.params.email;
                 const user = req.body;
@@ -208,18 +197,13 @@ const run=async()=>{
                 }
               
            )
-
-
-
-
-
-
             app.delete('/orderdeleted/:id',verifyJWT, async (req, res) => {
                 const id = req.params.id;
                 const quray = { _id: ObjectId(id) }
                 const result = await orderCollection.deleteOne(quray)
                res.send(result)
             })
+
             app.delete('/product/:id',verifyJWT, async (req, res) => {
                 const id = req.params.id;
                 const quray = { _id: ObjectId(id) }
@@ -236,6 +220,6 @@ const run=async()=>{
 run().catch(console.dir)
 
 app.get('/',(req,res)=>{
-    res.send('Assignment 12')
+    res.send('Assignment12 ')
 })
 app.listen(port)
