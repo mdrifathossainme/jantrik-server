@@ -39,6 +39,7 @@ const run=async()=>{
             const reviewsCollection = client.db('assigment12').collection('reviews')
             const orderCollection = client.db('assigment12').collection('order')
             const userCollection = client.db('assigment12').collection('user')
+            const paymentCollection = client.db('assigment12').collection('payment')
 
             app.get('/products',async (req, res) => {
                 const quary = {}
@@ -75,7 +76,7 @@ const run=async()=>{
                }
                
             })
-            app.get('/myorder/:id',verifyJWT, async (req, res) => {
+            app.get('/myorder/:id', async (req, res) => {
                 const id = req.params.id;
                 const filter = { _id: ObjectId(id) }
                 const result = await orderCollection.findOne(filter)
@@ -95,11 +96,34 @@ const run=async()=>{
                 res.send(result)
             })
            
+        app.post('/create-payment-intent', async(req,res)=>{
+                const service=req.body;
+                const price=service.price;
+                const amount=price*100;
+                const paymentIntent=await stripe.paymentIntents.create({
+                    amount:amount,
+                    currency:"usd",
+                    payment_method_types:['card']
+                });
+                res.send({clientSecret: paymentIntent.client_secret})
+            })
 
 
 
-
-
+         app.patch('/booking/:id',async(req,res)=>{
+                const id= req.params.id;
+                const payment= req.body;
+                const filter={_id:ObjectId(id)}
+                const updateDoc={
+                    $set:{
+                        paid:true,
+                        transactionId:payment.transactionId
+                    }
+                }
+                const result= await paymentCollection.insertOne(payment)
+                const updatedBooking=await orderCollection.updateOne(filter,updateDoc);
+                res.send(updateDoc)
+            })
 
 
 
