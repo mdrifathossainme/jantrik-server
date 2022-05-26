@@ -41,7 +41,7 @@ const run=async()=>{
             const userCollection = client.db('assigment12').collection('user')
             const paymentCollection = client.db('assigment12').collection('payment')
 
-            app.get('/products',async (req, res) => {
+            app.get('/products',verifyJWT,async (req, res) => {
                 const quary = {}
                 const result = await productCollection.find(quary).toArray()
                 res.send(result)
