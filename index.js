@@ -96,6 +96,11 @@ const run=async()=>{
                 const user= await userCollection.findOne({email:email})
                 res.send(user)
             })
+            app.get('/manageorder', async(req,res)=>{
+                const quary= {}
+                const order= await orderCollection.find(quary).toArray()
+                res.send(order)
+            })
 
 
 
@@ -215,7 +220,14 @@ const run=async()=>{
                 const result = await orderCollection.deleteOne(quray)
                res.send(result)
             })
+            app.delete('/product/:id',verifyJWT, async (req, res) => {
+                const id = req.params.id;
+                const quray = { _id: ObjectId(id) }
+                const result = await productCollection.deleteOne(quray)
+               res.send(result)
+            })
 
+           
         }
         finally{
             
