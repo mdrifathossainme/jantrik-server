@@ -62,7 +62,7 @@ const run=async()=>{
                 res.send(result)
             })
             app.get('/myorder',verifyJWT, async (req, res) => {
-                const email = req.query.email;    
+                const email = req.query.email; 
                 const decodedEmail = req.decoded.email
                 if (decodedEmail === email) {
                   const queary = { email }
@@ -164,7 +164,7 @@ const run=async()=>{
                     $set: user,
                 };
                 const result = await userCollection.updateOne(filter, updateDoc, options)
-                const token = jwt.sign({ email: email }, process.env.ACCESS_TOKEN, { expiresIn: "2h" })
+                const token = jwt.sign({ email: email }, process.env.ACCESS_TOKEN, { expiresIn: "2d" })
                 res.send({result,token})
             })
 
@@ -199,7 +199,22 @@ const run=async()=>{
                 res.send(result)
                 }
               
-           )
+            )
+            app.put('/product/:id', async (req, res) => {
+                const id = req.params.id;
+                const updateDoc = req.body;
+                const filter = { _id: ObjectId(id) }
+                console.log(updateDoc,filter)
+
+                const option = { upsert: true }
+                const upDoc = {
+                    $set:updateDoc
+                }
+                const result= await productCollection.updateOne(filter,upDoc,option)
+               res.send(result)
+            })
+
+            
             app.delete('/orderdeleted/:id', async (req, res) => {
                 const id = req.params.id;
                 const quray = { _id: ObjectId(id) }
