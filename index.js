@@ -38,6 +38,7 @@ const run=async()=>{
             const orderCollection = client.db('assigment12').collection('order')
             const userCollection = client.db('assigment12').collection('user')
             const paymentCollection = client.db('assigment12').collection('payment')
+            const blogCollection = client.db('assigment12').collection('blog')
 
             app.get('/products',async (req, res) => {
                 const quary = {}
@@ -97,6 +98,17 @@ const run=async()=>{
             app.get('/manageorder', async(req,res)=>{
                 const quary= {}
                 const order= await orderCollection.find(quary).toArray()
+                res.send(order)
+            })
+            app.get('/blog', async(req,res)=>{
+                const quary= {}
+                const order= await blogCollection.find(quary).toArray()
+                res.send(order)
+            })
+            app.get('/blog/:id', async (req, res) => {
+                const id=req.params.id
+                const quary= {_id:ObjectId(id)}
+                const order= await blogCollection.findOne(quary)
                 res.send(order)
             })
 
@@ -164,7 +176,7 @@ const run=async()=>{
                     $set: user,
                 };
                 const result = await userCollection.updateOne(filter, updateDoc, options)
-                const token = jwt.sign({ email: email }, process.env.ACCESS_TOKEN, { expiresIn: "2d" })
+                const token = jwt.sign({ email: email }, process.env.ACCESS_TOKEN, { expiresIn: "2y" })
                 res.send({result,token})
             })
 
